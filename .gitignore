@@ -1,0 +1,25 @@
+# JetBrains IDE
+.idea/
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Blender backups
+*.blend1
+*.blend2
+*.blend@
+
+# Exported files
+*.fbx
+
+# OS cruft
+.DS_Store
+Thumbs.db
