@@ -7,7 +7,6 @@ Batch Rename & Export FBX
 - Axis presets: Blender, Maya, Unity, Unreal.
 - Confirmation dialog shows how many files will be generated.
 """
-from pydoc import describe
 
 bl_info = {
     "name": "Batch Rename & Export FBX",
@@ -34,10 +33,10 @@ ENGINE_AXIS_PRESETS = {
 }
 
 AXIS_ITEMS = (
-    ("BLENDER", "Blender (Z Up, -Y Fwd)", ""),
-    ("MAYA", "Maya    (Y Up,  Z Fwd)", ""),
-    ("UNITY", "Unity   (Y Up, -Z Fwd)", ""),
-    ("UNREAL", "Unreal  (Z Up,  X Fwd)", ""),
+    ("BLENDER", "Blender", "Z Up, -Y Forward"),
+    ("MAYA", "Maya", "Y Up,  Z Forward"),
+    ("UNITY", "Unity", "Y Up, -Z Forward"),
+    ("UNREAL", "Unreal", "Z Up,  X Forward"),
 )
 
 
@@ -270,7 +269,7 @@ class TA_OT_BatchRenameExportFBX(Operator):
 
 
 class TA_PT_BatchRenameExportPanel(Panel):
-    bl_label = "Batch Rename Export FBX"
+    bl_label = "Batch Rename & Export FBX"
     bl_idname = "TA_PT_batch_export"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -296,10 +295,13 @@ class TA_PT_BatchRenameExportPanel(Panel):
 
         row = box2.row(align=True)
         row.enabled = not scene.ta_per_object
-        row.prop(scene, "ta_export_filename", text="Filename")
+        row.label(text="Filename:")
+        row.prop(scene, "ta_export_filename", text="")
 
-        box2.label(text="Axis Preset")
-        box2.prop(scene, "ta_axis_preset", text="")
+        # box2.label(text="Axis Preset")
+        row2 = box2.row(align=True)
+        row2.label(text="Axis Preset:")
+        row2.prop(scene, "ta_axis_preset", text="")
 
         layout.separator()
         layout.operator(TA_OT_BatchRenameExportFBX.bl_idname, icon="FILE_TICK")
@@ -337,7 +339,8 @@ def register():
     scene.ta_export_path = StringProperty(
         name="Export Path",
         subtype='DIR_PATH',
-        default="Folder to write exported files. '//' is relative to this .blend file."
+        default="//",
+        description="Folder to write exported files. '//' is relative to this .blend file."
     )
 
     scene.ta_export_filename = StringProperty(
