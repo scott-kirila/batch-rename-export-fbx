@@ -27,9 +27,9 @@ It adds a panel to the **3D Viewport > N-Panel > TA Tools** with simple options 
 
 ## 📦 Installation
 
-1. Download this repository as a `.zip`.  
+1. Download the `.py` file.  
 2. In Blender, go to **Edit > Preferences > Add-ons > Install...**  
-3. Select the `.zip` file and enable **Batch Rename & Export FBX**.  
+3. Select the `.py` file and enable **Batch Rename & Export FBX**.  
 4. The tool will appear in the **3D Viewport > N-Panel > TA Tools** tab.
 
 ---
