@@ -26,17 +26,17 @@ from bpy.props import StringProperty, EnumProperty, BoolProperty
 
 # ---------------- Axis presets ----------------
 ENGINE_AXIS_PRESETS = {
-    "BLENDER": dict(axis_forward='-Y', axis_up='Z'),
-    "MAYA": dict(axis_forward='Z', axis_up='Y'),
-    "UNITY": dict(axis_forward='-Z', axis_up='Y'),
-    "UNREAL": dict(axis_forward='X', axis_up='Z'),
+    "BLENDER": dict(axis_forward='Y', axis_up='Z'), # Z-up, Y-forward
+    "MAYA": dict(axis_forward='Z', axis_up='Y'), # Y-up, Z-forward
+    "UNITY": dict(axis_forward='-Z', axis_up='Y'), # Unity is Y-up, Z-forward BUT left-handed
+    "UNREAL": dict(axis_forward='-X', axis_up='Z'), # Unreal is Z-up, X-forward BUT left-handed
 }
 
 AXIS_ITEMS = (
-    ("BLENDER", "Blender", "Z Up, -Y Forward"),
-    ("MAYA", "Maya", "Y Up,  Z Forward"),
-    ("UNITY", "Unity", "Y Up, -Z Forward"),
-    ("UNREAL", "Unreal", "Z Up,  X Forward"),
+    ("BLENDER", "Blender", "Z Up, Y Forward (Right-handed)"),
+    ("MAYA", "Maya", "Y Up,  Z Forward (Right-handed)"),
+    ("UNITY", "Unity", "Y Up, Z Forward (Left-handed)"),
+    ("UNREAL", "Unreal", "Z Up,  X Forward (Left-handed)"),
 )
 
 
@@ -126,14 +126,21 @@ class Utilities:
 
     @staticmethod
     def export_fbx(filepath: str, axis_key: str) -> None:
-        preset = ENGINE_AXIS_PRESETS.get(axis_key, ENGINE_AXIS_PRESETS["BLENDER"])
+        preset = ENGINE_AXIS_PRESETS[axis_key]
+
+        # Unity and Unreal seem to make different (default) assumptions upon import.
+        # This addresses that issue so that models are loaded with the expected orientation.
+        # NOTE: Maya remains untested (here, we might want to flip the forward direction to face the camera).
+        use_space_transform = True if axis_key == "UNITY" else False
 
         bpy.ops.export_scene.fbx(
             filepath=filepath,
             use_selection=True,
             apply_unit_scale=True,
-            bake_space_transform=True,
-            apply_scale_options="FBX_SCALE_ALL",
+            apply_scale_options="FBX_SCALE_UNITS",
+            object_types={"MESH"},
+            use_space_transform=use_space_transform,
+            bake_space_transform=False,
             **preset
         )
 
